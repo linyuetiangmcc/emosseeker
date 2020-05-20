@@ -2,12 +2,25 @@ package com.gmcc.emosseeker.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmcc.emosseeker.common.HttpClientUtil;
 import com.gmcc.emosseeker.common.JsonUtils;
+import com.gmcc.emosseeker.constant.CookieConstant;
+import com.gmcc.emosseeker.constant.RedisConstant;
+import com.gmcc.emosseeker.dbentity.OperationRecord;
+import com.gmcc.emosseeker.dbentity.UserInfo;
 import com.gmcc.emosseeker.entity.*;
 import com.gmcc.emosseeker.entity.hardwaredetail.DataDetailHardWare;
+import com.gmcc.emosseeker.enums.ResultEnum;
+import com.gmcc.emosseeker.service.OperationRecordService;
+import com.gmcc.emosseeker.service.UserInfoService;
+import com.gmcc.emosseeker.utils.CookieUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +31,12 @@ import java.util.Map;
 public class WorkSheetController {
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private UserInfoService userInfoService;
+
+    @Autowired
+    private OperationRecordService operationRecordService;
 
     @RequestMapping(value = "/list",method = RequestMethod.GET)
     public Map<String, Object>  list(@RequestParam(defaultValue = "0") Integer type){
@@ -179,14 +198,43 @@ public class WorkSheetController {
         header.put("zy_token",zy_token);
         String jsonStr = JsonUtils.objectToJson(postAudit);
         String resultStr = HttpClientUtil.doPostJson(url,jsonStr,header);
-        System.out.println(resultStr);
+        //System.out.println(resultStr);
         PostResult postResult = JsonUtils.jsonToPojo(resultStr,PostResult.class);
         if(!resultStr.contains("\"code\":\"0000\"")){
             modelMap.put("success",false);
         }else{
+            //操作日志记录入库
+            Cookie cookie = getCookie();
+            if(cookie == null){
+                System.out.println("操作日志入库因用户没有cookie失败");
+            }
+            String openid = redisTemplate.opsForValue().get(String.format(RedisConstant.TOKEN_PREFIX,cookie.getValue()));
+            UserInfo userInfo = userInfoService.getUserInfoByOpenId(openid);
+            if(userInfo != null){
+                OperationRecord operationRecord = new OperationRecord();
+                operationRecord.setTaskId(postAuditForm.getTaskId());
+                operationRecord.setAuditAdvice(postAuditForm.getAuditAdvice());
+                operationRecord.setAuditResult(postAuditForm.getAuditResult());
+                operationRecord.setWsid(postAuditForm.getWsid());
+                operationRecord.setWsHintInfo(postAuditForm.getWsHintInfo());
+                operationRecord.setUserId(userInfo.getUserId());
+                if(operationRecordService.insertOperationRecord(operationRecord)){
+                    System.out.println("操作工单记录入库成功!");
+                }else
+                {
+                    System.out.println("操作工单记录入库失败!");
+                }
+            }
             modelMap.put("success",true);
         }
         modelMap.put("result",postResult);
         return modelMap;
+    }
+
+
+    private Cookie getCookie(){
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attributes.getRequest();
+        return  CookieUtil.get(request, CookieConstant.TOKEN);
     }
 }

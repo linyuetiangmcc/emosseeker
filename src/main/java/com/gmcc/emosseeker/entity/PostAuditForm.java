@@ -19,4 +19,6 @@ public class PostAuditForm {
     private String taskId;
     @NotEmpty(message = "任务号必填")
     private String wsid;
+    @NotEmpty(message = "工单主题必填")
+    private String wsHintInfo;
 }

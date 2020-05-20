@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gmcc.emosseeker.dao.OperationRecordDao">
+    <select id="queryOperationRecordById" resultType="com.gmcc.emosseeker.dbentity.OperationRecord">
+		SELECT *
+		FROM tb_oplog
+		WHERE
+		id=#{id}
+	</select>
+    <select id="queryOperationRecordByUserId" resultType="com.gmcc.emosseeker.dbentity.OperationRecord">
+		SELECT *
+		FROM tb_oplog
+		WHERE
+		user_id=#{userId}
+		ORDER BY create_time DESC
+	</select>
+
+    <insert id="insertOperationRecord" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id" parameterType="com.gmcc.emosseeker.dbentity.OperationRecord">
+		INSERT INTO
+		tb_oplog(user_id,wsid,task_id,audit_advice,audit_result,ws_hintInfo)
+		VALUES
+		(#{userId},#{wsid},#{taskId},#{auditAdvice},#{auditResult},#{wsHintInfo})
+	</insert>
+
+    <delete id="deleteOperationRecordById">
+		DELETE FROM
+		tb_oplog
+		WHERE
+		id =
+		#{id}
+	</delete>
+</mapper>
