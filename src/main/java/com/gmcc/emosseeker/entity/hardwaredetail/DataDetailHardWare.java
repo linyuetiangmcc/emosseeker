@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 public class DataDetailHardWare {
     @JsonProperty("baseAttachResps")
-    private List<String> baseattachresps;
+    private List<Object> baseattachresps;
     @JsonProperty("baseHandleRecResps")
     private List<Basehandlerecresps> basehandlerecresps;
     @JsonProperty("baseWorksheetResp")
