@@ -83,6 +83,7 @@ public class UserInfoController {
         userInfo.setProvince(userInfoApp.getProvince());
         userInfo.setStatus(0);
         userInfo.setUsername("");
+        userInfo.setOpflag(0);
         if(userInfoService.addUserInfo(userInfo)) {
             modelMap.put("success", true);
             modelMap.put("message", ResultEnum.USER_ADDSUCCESS);

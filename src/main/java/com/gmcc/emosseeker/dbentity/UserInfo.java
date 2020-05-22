@@ -19,4 +19,5 @@ public class UserInfo {
     private String province;
     private Integer status;
     private String username;
+    private Integer opflag;  //0没有权限处理工单 1有onsite 2 有硬件 3 有onsite及硬件
 }

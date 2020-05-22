@@ -25,9 +25,9 @@
     <insert id="insertUserInfo" useGeneratedKeys="true" keyProperty="userId"
             keyColumn="user_id" parameterType="com.gmcc.emosseeker.dbentity.UserInfo">
 		INSERT INTO
-		tb_userinfo(user_id,open_id,tel_number,avatar_url,city,country,gender,userlanguage,nick_name,province,status,username)
+		tb_userinfo(user_id,open_id,tel_number,avatar_url,city,country,gender,userlanguage,nick_name,province,status,username,opflag)
 		VALUES
-		(#{userId},#{openId},#{telNumber},#{avatarUrl},#{city},#{country},#{gender},#{language},#{nickName},#{province},#{status},#{username})
+		(#{userId},#{openId},#{telNumber},#{avatarUrl},#{city},#{country},#{gender},#{language},#{nickName},#{province},#{status},#{username},#{opflag})
 	</insert>
     <update id="updateUserInfo" parameterType="com.gmcc.emosseeker.dbentity.UserInfo">
         update tb_userinfo
@@ -43,6 +43,7 @@
 			<if test="province != null">province=#{province},</if>
 			<if test="status != null">status=#{status},</if>
 			<if test="username != null">username=#{username},</if>
+			<if test="opflag != null">opflag=#{opflag},</if>
         </set>
         where user_id=#{userId}
     </update>

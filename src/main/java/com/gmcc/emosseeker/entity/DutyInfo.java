@@ -8,4 +8,5 @@ public class DutyInfo {
     private String daynamelist;
     private String nightnamelist;
     private String pool;
+    private String poolleader;
 }

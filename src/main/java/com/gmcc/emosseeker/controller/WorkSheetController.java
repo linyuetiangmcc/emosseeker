@@ -192,6 +192,16 @@ public class WorkSheetController {
         postAudit.setAuditPhone("13922200557");
 
         //System.out.println(postAudit);
+        Cookie cookie = getCookie();
+        String openid = redisTemplate.opsForValue().get(String.format(RedisConstant.TOKEN_PREFIX,cookie.getValue()));
+        UserInfo userInfo = userInfoService.getUserInfoByOpenId(openid);
+
+        if(userInfo != null && userInfo.getOpflag()== 0){
+            modelMap.put("success",false);
+            modelMap.put("message","没有权限");
+            return  modelMap;
+        }
+
 
         String url = "https://fee.net.chinamobile.com/api/eoms/workflow/app/sceneService/audit";
         Map<String,String> header = new HashMap<>();
@@ -205,12 +215,6 @@ public class WorkSheetController {
             modelMap.put("success",false);
         }else{
             //操作日志记录入库
-            Cookie cookie = getCookie();
-            if(cookie == null){
-                System.out.println("操作日志入库因用户没有cookie失败");
-            }
-            String openid = redisTemplate.opsForValue().get(String.format(RedisConstant.TOKEN_PREFIX,cookie.getValue()));
-            UserInfo userInfo = userInfoService.getUserInfoByOpenId(openid);
             if(userInfo != null){
                 OperationRecord operationRecord = new OperationRecord();
                 operationRecord.setTaskId(postAuditForm.getTaskId());
