@@ -1,4 +1,5 @@
 package com.gmcc.emosseeker.controller;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmcc.emosseeker.common.HttpClientUtil;
 import com.gmcc.emosseeker.common.JsonUtils;
@@ -51,8 +52,8 @@ public class WorkSheetController {
             String postJson = "{\"pageNum\":\"" + paageNum + "\",\"pageSize\":\"100\",\"userType\":\"inner\"}";
             Map<String,String> header = new HashMap<>();
             header.put("zy_token",zy_token);
-            //header.put("zy_token","web_2846beb8-a59c-45f6-a8ae-acf1c18e1fb5");
             String resultstr = HttpClientUtil.doPostJson(url,postJson,header);
+            //System.out.println(resultstr);
             if(!resultstr.contains("\"code\":\"0000\"")){
                 modelMap.put("success",false);
                 return modelMap;
@@ -60,7 +61,9 @@ public class WorkSheetController {
             PostResult postResult = JsonUtils.jsonToPojo(resultstr,PostResult.class);
             String jsonstr = JsonUtils.objectToJson(postResult.getData());
             try{
-                DataRaw dataRaw = new ObjectMapper().readValue(jsonstr, DataRaw.class);
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                DataRaw dataRaw = objectMapper.readValue(jsonstr, DataRaw.class);
                 List<ListRaw> post_row = dataRaw.getList();
                 for (ListRaw listRaw:post_row
                      ) {
@@ -120,8 +123,6 @@ public class WorkSheetController {
         Map<String,String> header = new HashMap<>();
         String zy_token = redisTemplate.opsForValue().get("jtemos_zy_token");
         header.put("zy_token",zy_token);
-        //header.put("zy_token","web_2846beb8-a59c-45f6-a8ae-acf1c18e1fb5");
-        //header.put("Cookie","zy_token=web_6609e53a-35d5-4497-8565-a1f32ca87195;");
         String resultstr = HttpClientUtil.doGet(url,null,header);
         //System.out.println(resultstr);
         if(!resultstr.contains("\"code\":\"0000\"")){

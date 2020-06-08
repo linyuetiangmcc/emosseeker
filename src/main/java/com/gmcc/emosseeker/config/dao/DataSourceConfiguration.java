@@ -27,6 +27,12 @@ public class DataSourceConfiguration {
         dataSource.setUser(jdbcUsername);
         dataSource.setPassword(jdbcPassword);
         dataSource.setAutoCommitOnClose(false);
+        dataSource.setMaxPoolSize(20);
+        dataSource.setMinPoolSize(5);
+        dataSource.setInitialPoolSize(10);
+        dataSource.setMaxIdleTime(300);
+        dataSource.setAcquireIncrement(5);
+        dataSource.setIdleConnectionTestPeriod(120);
         return dataSource;
     }
 }

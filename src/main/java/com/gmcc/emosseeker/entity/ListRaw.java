@@ -38,6 +38,8 @@ public class ListRaw {
     private String regionfullname;
     @JsonProperty("regionName")
     private String regionname;
+    @JsonProperty("taskDese")
+    private String taskdese;
     @JsonProperty("taskId")
     private String taskid;
     @JsonProperty("wsBegintime")
