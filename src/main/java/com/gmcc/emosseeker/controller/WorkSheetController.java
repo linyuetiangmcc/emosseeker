@@ -74,7 +74,7 @@ public class WorkSheetController {
                     lastPageFlag = true;
                     break;
                 }
-                System.out.println(dataRaw);
+                //System.out.println(dataRaw);
             }catch (Exception ex){
                 ex.printStackTrace();
                 modelMap.put("success",false);
@@ -132,7 +132,9 @@ public class WorkSheetController {
         PostResult postResult = JsonUtils.jsonToPojo(resultstr,PostResult.class);
         String jsonstr = JsonUtils.objectToJson(postResult.getData());
         try {
-            DataDetail dataDetail = new ObjectMapper().readValue(jsonstr, DataDetail.class);
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            DataDetail dataDetail = objectMapper.readValue(jsonstr, DataDetail.class);
             modelMap.put("workSheetDetail",dataDetail);
             modelMap.put("success",true);
 
@@ -159,7 +161,9 @@ public class WorkSheetController {
         PostResult postResult = JsonUtils.jsonToPojo(resultstr,PostResult.class);
         String jsonstr = JsonUtils.objectToJson(postResult.getData());
         try {
-            DataDetailHardWare dataDetailHardWare = new ObjectMapper().readValue(jsonstr, DataDetailHardWare.class);
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            DataDetailHardWare dataDetailHardWare = objectMapper.readValue(jsonstr, DataDetailHardWare.class);
             modelMap.put("workSheetDetail",dataDetailHardWare);
             modelMap.put("success",true);
 
