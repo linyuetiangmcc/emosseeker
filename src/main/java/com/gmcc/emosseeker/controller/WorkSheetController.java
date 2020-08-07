@@ -9,7 +9,6 @@ import com.gmcc.emosseeker.dbentity.OperationRecord;
 import com.gmcc.emosseeker.dbentity.UserInfo;
 import com.gmcc.emosseeker.entity.*;
 import com.gmcc.emosseeker.entity.hardwaredetail.DataDetailHardWare;
-import com.gmcc.emosseeker.enums.ResultEnum;
 import com.gmcc.emosseeker.service.OperationRecordService;
 import com.gmcc.emosseeker.service.UserInfoService;
 import com.gmcc.emosseeker.utils.CookieUtil;
